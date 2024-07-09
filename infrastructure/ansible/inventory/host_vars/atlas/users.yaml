@@ -1,12 +1,12 @@
 ---
 users:
-  - name: peter
+  - name: christoph
     shell: /bin/bash
     comment: The owner of the box
     password: "{{ user_password_peter }}"
     groups: backup,ahinko
 
-  - name: ellen
+  - name: ines
     shell: /bin/bash
     comment: The one and only Ellen
     password: "{{ user_password_ellen }}"
