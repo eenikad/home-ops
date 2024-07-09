@@ -1,6 +1,6 @@
 ---
 fish_users:
-  - name: peter
-    home: /home/peter
+  - name: christoph
+    home: /home/christoph
   - name: root
     home: /root
