@@ -1,0 +1,223 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
+---
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+talosVersion: v1.9.3
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.32.1
+
+clusterName: kubernetes
+endpoint: https://10.10.0.200:6443
+
+clusterPodNets:
+  - "10.69.0.0/16"
+clusterSvcNets:
+  - "10.96.0.0/16"
+
+additionalApiServerCertSans: &sans
+  - "10.10.0.200"
+  - "127.0.0.1"
+additionalMachineCertSans: *sans
+
+# Disable built-in Flannel to use Cilium
+cniConfig:
+  name: none
+
+nodes:
+  - hostname: "k8s-prod-master01"
+    ipAddress: "10.30.0.101"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:27:d6:38"
+        dhcp: false
+        addresses:
+          - "10.30.0.101/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "10.30.0.1"
+        mtu: 1500
+        vip:
+          ip: "10.10.0.200"
+    patches:
+      - # Encrypt system disk with TPM
+        |-
+        machine:
+          systemDiskEncryption:
+            state:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+            ephemeral:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+  - hostname: "k8s-prod-master02"
+    ipAddress: "10.30.0.102"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:0a:54:70"
+        dhcp: false
+        addresses:
+          - "10.30.0.102/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "10.30.0.1"
+        mtu: 1500
+        vip:
+          ip: "10.10.0.200"
+    patches:
+      - # Encrypt system disk with TPM
+        |-
+        machine:
+          systemDiskEncryption:
+            state:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+            ephemeral:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+  - hostname: "k8s-prod-master03"
+    ipAddress: "10.30.0.103"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:7d:b4:96"
+        dhcp: false
+        addresses:
+          - "10.30.0.103/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "10.30.0.1"
+        mtu: 1500
+        vip:
+          ip: "10.10.0.200"
+    patches:
+      - # Encrypt system disk with TPM
+        |-
+        machine:
+          systemDiskEncryption:
+            state:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+            ephemeral:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+  - hostname: "k8s-prod-worker01"
+    ipAddress: "10.30.0.111"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    controlPlane: 
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:dc:59:69"
+        dhcp: false
+        addresses:
+          - "10.30.0.111/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "10.30.0.1"
+        mtu: 1500
+    patches:
+      - # Encrypt system disk with TPM
+        |-
+        machine:
+          systemDiskEncryption:
+            state:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+            ephemeral:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+  - hostname: "k8s-prod-worker02"
+    ipAddress: "10.30.0.112"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    controlPlane: 
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:b2:84:a4"
+        dhcp: false
+        addresses:
+          - "10.30.0.112/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "10.30.0.1"
+        mtu: 1500
+    patches:
+      - # Encrypt system disk with TPM
+        |-
+        machine:
+          systemDiskEncryption:
+            state:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+            ephemeral:
+              provider: luks2
+              keys:
+                - slot: 0
+                  tpm: {}
+  - hostname: "k8s-prod-worker03"
+    ipAddress: "10.30.0.113"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    controlPlane: 
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:01:20:47"
+        dhcp: false
+        addresses:
+          - "10.30.0.113/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "10.30.0.1"
+        mtu: 1500
+
+# Global patches
+patches:
+  - "@./patches/global/machine-files.yaml"
+  - "@./patches/global/machine-kubelet.yaml"
+  - "@./patches/global/machine-network.yaml"
+  - "@./patches/global/machine-sysctls.yaml"
+  - "@./patches/global/machine-time.yaml"
+
+# Controller patches
+controlPlane:
+  patches:
+    - "@./patches/controller/admission-controller-patch.yaml"
+    - "@./patches/controller/cluster.yaml"
+
