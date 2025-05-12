@@ -42,21 +42,6 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.10.0.200"
-    patches:
-      - # Encrypt system disk with TPM
-        |-
-        machine:
-          systemDiskEncryption:
-            state:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
-            ephemeral:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
   - hostname: "k8s-prod-master02"
     ipAddress: "10.30.0.102"
     installDisk: "/dev/sda"
@@ -76,21 +61,6 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.10.0.200"
-    patches:
-      - # Encrypt system disk with TPM
-        |-
-        machine:
-          systemDiskEncryption:
-            state:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
-            ephemeral:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
   - hostname: "k8s-prod-master03"
     ipAddress: "10.30.0.103"
     installDisk: "/dev/sda"
@@ -110,21 +80,6 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.10.0.200"
-    patches:
-      - # Encrypt system disk with TPM
-        |-
-        machine:
-          systemDiskEncryption:
-            state:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
-            ephemeral:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
   - hostname: "k8s-prod-worker01"
     ipAddress: "10.30.0.111"
     installDisk: "/dev/sda"
@@ -142,21 +97,6 @@ nodes:
           - network: "0.0.0.0/0"
             gateway: "10.30.0.1"
         mtu: 1500
-    patches:
-      - # Encrypt system disk with TPM
-        |-
-        machine:
-          systemDiskEncryption:
-            state:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
-            ephemeral:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
   - hostname: "k8s-prod-worker02"
     ipAddress: "10.30.0.112"
     installDisk: "/dev/sda"
@@ -174,21 +114,6 @@ nodes:
           - network: "0.0.0.0/0"
             gateway: "10.30.0.1"
         mtu: 1500
-    patches:
-      - # Encrypt system disk with TPM
-        |-
-        machine:
-          systemDiskEncryption:
-            state:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
-            ephemeral:
-              provider: luks2
-              keys:
-                - slot: 0
-                  tpm: {}
   - hostname: "k8s-prod-worker03"
     ipAddress: "10.30.0.113"
     installDisk: "/dev/sda"
