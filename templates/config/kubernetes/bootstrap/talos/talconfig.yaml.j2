@@ -40,14 +40,16 @@ nodes:
     talosImageURL: factory.talos.dev/installer#{ "-secureboot" if item.secureboot else ""}#/#{ item.schematic_id }#
     controlPlane: #{ (item.controller) | string | lower }#
     networkInterfaces:
+    #% for interface in item.interfaces %# 
       - deviceSelector:
-          hardwareAddr: "#{ item.mac_addr | lower }#"
-        #% if vlan %#
+          hardwareAddr: "#{ interface.mac_addr | lower }#"
+        #% if interface.vlan %#
         vlans:
-          - vlanId: #{ vlan }#
+          - vlanId: #{ interface.vlan }#
             addresses:
-              - "#{ item.address }#/#{ node_network.split('/') | last }#"
+              - "#{ interface.address }#/#{ node_network.split('/') | last }#"
             mtu: #{ item.mtu | default(1500, true) }#
+            #% if interface.default %#
             routes:
               - network: "0.0.0.0/0"
                 #% if node_default_gateway %#
@@ -59,10 +61,14 @@ nodes:
             vip:
               ip: "#{ controller_vip }#"
             #% endif %#
-        #% else %#
+            #% endif %#
+        #% else %#   
+        #% if interface.address %#
         dhcp: false
         addresses:
-          - "#{ item.address }#/#{ node_network.split('/') | last }#"
+          - "#{ interface.address }#/#{ node_network.split('/') | last }#"
+        
+        #% if interface.default %#
         routes:
           - network: "0.0.0.0/0"
             #% if node_default_gateway %#
@@ -70,12 +76,17 @@ nodes:
             #% else %#
             gateway: "#{ node_network | nthhost(1) }#"
             #% endif %#
-        mtu: #{ item.mtu | default(1500, true) }#
         #% if item.controller %#
         vip:
           ip: "#{ controller_vip }#"
         #% endif %#
         #% endif %#
+        mtu: #{ item.mtu | default(1500, true) }#
+        #% else %#
+        ignore: true
+        #% endif %#
+        #% endif %#
+    #% endfor %#
     #% if talos_patches('%s' % (item.name)) | length == 0 %#
     #% if item.encrypt_disk %#
     patches:
