@@ -2,4 +2,4 @@ machine:
   kubelet:
     nodeIP:
       validSubnets:
-        - 10.30.0.0/24
+        - 10.10.0.0/24

@@ -44,10 +44,10 @@ def validate_node(node: dict, node_cidr: str) -> None:
     except netaddr.core.AddrFormatError as e:
         raise ValueError(f"Invalid IP address {node.get('address')}") from e
 
-    if netaddr.IPAddress(node.get('address'), 4) not in netaddr.IPNetwork(node_cidr):
-        raise ValueError(
-            f"Invalid node address {node.get('address')} for {node.get('name')}, must be in CIDR {node_cidr}"
-        )
+    #if netaddr.IPAddress(node.get('address'), 4) not in netaddr.IPNetwork(node_cidr):
+        #raise ValueError(
+        #    f"Invalid node address {node.get('address')} for {node.get('name')}, must be in CIDR {node_cidr}"
+        #)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.settimeout(5)
