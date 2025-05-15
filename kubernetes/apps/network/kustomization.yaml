@@ -8,6 +8,6 @@ resources:
   - ./internal/ks.yaml
   - ./multus/ks.yaml
 components:
-  - ../../components/namespace
+  - ../../components/common
   - ../../components/flux/alerts
-  - ../../flux/components/common
+  #- ../../flux/components/common
