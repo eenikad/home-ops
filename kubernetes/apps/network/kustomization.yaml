@@ -9,5 +9,5 @@ resources:
   - ./multus/ks.yaml
 components:
   - ../../components/common
-  - ../../components/flux/alerts
+  - ../../components/common/alerts
   #- ../../flux/components/common
