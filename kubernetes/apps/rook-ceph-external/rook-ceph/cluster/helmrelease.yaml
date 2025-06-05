@@ -54,8 +54,8 @@ spec:
         #provider: host
         provider: multus
         selectors:
-          public: default/multus-ceph
-          cluster: default/multus-ceph
+          public: network/multus-ceph
+          cluster: network/multus-ceph
     monitoring:
       enabled: true
       #createPrometheusRules: true
