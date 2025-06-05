@@ -7,7 +7,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 5m
-  path: ./infrastructure/networking/whereabouts/base
+  path: "./kubernetes/apps/network/whereabouts/app"
   prune: true
   sourceRef:
     kind: GitRepository
