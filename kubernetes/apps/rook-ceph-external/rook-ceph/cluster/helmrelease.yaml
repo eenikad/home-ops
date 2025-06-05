@@ -50,6 +50,12 @@ spec:
           mon:
             disabled: false
             interval: 45s
+      network:
+        #provider: host
+        provider: multus
+        selectors:
+          public: default/multus-ceph
+          cluster: default/multus-ceph
     monitoring:
       enabled: true
       #createPrometheusRules: true

@@ -59,6 +59,8 @@ spec:
   dependsOn:
     - name: rook-ceph
       namespace: *namespace
+    - name: multus
+      namespace: network
     # - name: rook-ceph-haproxy
     #   namespace: *namespace
   healthChecks:
