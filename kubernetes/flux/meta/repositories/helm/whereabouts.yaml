@@ -7,5 +7,5 @@ metadata:
   namespace: flux-system
 spec:
   type: oci
-  url: oci://ghcr.io/k8snetworkplumbingwg/whereabouts-chart
+  url: oci://ghcr.io/k8snetworkplumbingwg/whereabouts
   interval: 5m
