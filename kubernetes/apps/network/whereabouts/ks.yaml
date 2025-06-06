@@ -11,7 +11,8 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: whereabouts
+    name: flux-system
+    namespace: flux-system
   targetNamespace: kube-system
   timeout: 1m
 
