@@ -1,12 +1,12 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
-  name: whereabouts
-#  namespace: flux-system
-spec:
-  type: oci
-  url: oci://ghcr.io/k8snetworkplumbingwg/whereabouts-chart
-  interval: 1h
+# apiVersion: source.toolkit.fluxcd.io/v1beta2
+# kind: HelmRepository
+# metadata:
+#   name: whereabouts
+# #  namespace: flux-system
+# spec:
+#   type: oci
+#   url: oci://ghcr.io/k8snetworkplumbingwg/whereabouts-chart
+#   interval: 1h
 
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
