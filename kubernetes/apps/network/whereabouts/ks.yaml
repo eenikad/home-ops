@@ -3,16 +3,19 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: whereabouts
-  namespace: flux-system
+  name: &appname whereabouts
+  namespace: &namespace network
 spec:
-  interval: 5m
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *appname
+  interval: 30m
+  timeout: 5m
   path: "./kubernetes/apps/network/whereabouts/app"
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: kube-system
-  timeout: 1m
-
+  wait: true
