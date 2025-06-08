@@ -25,10 +25,10 @@ spec:
         name: bitnami
         namespace: flux-system
   values:
-    image:
-      repository: docker.io/bitnami/whereabouts
-      tag: 1.2.11
-      pullPolicy: IfNotPresent
+    # image:
+    #   repository: docker.io/bitnami/whereabouts
+    #   tag: 1.2.11
+    #   pullPolicy: IfNotPresent
     cni:
       binDir: /opt/cni/bin
       confDir: /etc/cni/net.d
