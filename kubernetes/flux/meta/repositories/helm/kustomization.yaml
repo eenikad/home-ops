@@ -15,4 +15,4 @@ resources:
   - ./piraeus.yaml
   - ./spegel.yaml
   - ./stakater.yaml
-  - ./bitnami.yaml
+  #- ./bitnami.yaml
