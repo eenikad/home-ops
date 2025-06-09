@@ -6,14 +6,6 @@ metadata:
   namespace: network
 spec:
   interval: 5m
-  # chart:
-  #   spec:
-  #     chart: whereabouts
-  #     version: 1.2.12
-  #     sourceRef:
-  #       kind: HelmRepository
-  #       name: bitnami-oci
-  #       namespace: flux-system
   chart:
     spec:
       chart: app-template
@@ -27,6 +19,14 @@ spec:
       repository: docker.io/bitnami/whereabouts
       tag: 1.2.12
       pullPolicy: IfNotPresent
-    cni:
-      binDir: /opt/cni/bin
-      confDir: /etc/cni/net.d
+    persistence:
+      etc-cni-net-d:
+        type: hostPath
+        hostPath: /etc/cni/net.d
+        globalMounts:
+          - path: /host/etc/cni/net.d
+      opt-cni-bin:
+        type: hostPath
+        hostPath: /opt/cni/bin
+        globalMounts:
+          - path: /host/opt/cni/bin
