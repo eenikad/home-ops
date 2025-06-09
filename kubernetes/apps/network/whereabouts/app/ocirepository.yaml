@@ -15,12 +15,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: bitnami-oci
+  name: whereabouts-chart
 spec:
   interval: 10m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
-  # ref:
-  #   tag: v1.17.2
-  url: oci://registry-1.docker.io/bitnamicharts
+  ref:
+    tag: v0.9.0
+  url: oci://ghcr.io/k8snetworkplumbingwg/whereabouts-chart
