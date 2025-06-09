@@ -8,25 +8,25 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: app-template
-      version: 4.0.1
+      chart: whereabouts
+      version: 1.2.12
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
+        name: bitnami-oci
         namespace: flux-system
+  # chart:
+  #   spec:
+  #     chart: app-template
+  #     version: 4.0.1
+  #     sourceRef:
+  #       kind: HelmRepository
+  #       name: bjw-s
+  #       namespace: flux-system
   values:
     image:
       repository: docker.io/bitnami/whereabouts
       tag: 1.2.12
       pullPolicy: IfNotPresent
-    persistence:
-      etc-cni-net-d:
-        type: hostPath
-        hostPath: /etc/cni/net.d
-        globalMounts:
-          - path: /host/etc/cni/net.d
-      opt-cni-bin:
-        type: hostPath
-        hostPath: /opt/cni/bin
-        globalMounts:
-          - path: /host/opt/cni/bin
+    cni:
+      binDir: /opt/cni/bin
+      confDir: /etc/cni/net.d
