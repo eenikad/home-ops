@@ -17,7 +17,7 @@ spec:
   #       kind: HelmRepository
   #       name: bjw-s
   #       namespace: flux-system
-    values: []
+    values: {}
   #   image:
   #     repository: docker.io/bitnami/whereabouts
   #     tag: 1.2.12

@@ -61,6 +61,8 @@ spec:
       namespace: *namespace
     - name: multus
       namespace: network
+    - name: whereabouts
+      namespace: network
     # - name: rook-ceph-haproxy
     #   namespace: *namespace
   healthChecks:
