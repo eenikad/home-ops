@@ -86,7 +86,7 @@ spec:
 
     # # -- A list of CephObjectStore configurations to deploy
     # # @default -- See [below](#ceph-object-stores)
-    cephObjectStores: {}
+    cephObjectStores: []
       # - name: ceph-objectstore
       #   spec:
       #     gateway:
