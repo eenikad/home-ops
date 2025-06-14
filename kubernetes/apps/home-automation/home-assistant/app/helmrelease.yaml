@@ -120,28 +120,41 @@ spec:
               - path: /nonexistent
                 subPath: nonexistent
 
-    route:
-      app:
-        hostnames:
-          - hass.anneken.cloud
-        parentRefs:
-          - name: internal
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - matches:
-              - path:
-                  type: PathPrefix
-                  value: /code/
-            filters:
-              - type: URLRewrite
-                urlRewrite:
-                  path:
-                    type: ReplacePrefixMatch
-                    replacePrefixMatch: /
-            backendRefs:
-              - identifier: app
-                port: 12321
-          - backendRefs:
-              - identifier: app
-                port: 8123
+    ingress:
+          app:
+            className: external
+            annotations:
+              external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+            hosts:
+              - host: "hass.${SECRET_DOMAIN}"
+                paths:
+                  - path: /
+                    service:
+                      identifier: app
+                      port: 8123
+
+    # route:
+    #   app:
+    #     hostnames:
+    #       - hass.anneken.cloud
+    #     parentRefs:
+    #       - name: internal
+    #         namespace: kube-system
+    #         sectionName: https
+    #     rules:
+    #       - matches:
+    #           - path:
+    #               type: PathPrefix
+    #               value: /code/
+    #         filters:
+    #           - type: URLRewrite
+    #             urlRewrite:
+    #               path:
+    #                 type: ReplacePrefixMatch
+    #                 replacePrefixMatch: /
+    #         backendRefs:
+    #           - identifier: app
+    #             port: 12321
+    #       - backendRefs:
+    #           - identifier: app
+    #             port: 8123
