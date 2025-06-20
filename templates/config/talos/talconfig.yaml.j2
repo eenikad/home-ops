@@ -36,34 +36,53 @@ nodes:
     talosImageURL: factory.talos.dev/installer#{ "-secureboot" if item.secureboot | default(false, true) }#/#{ item.schematic_id }#
     controlPlane: #{ (item.controller) | string | lower }#
     networkInterfaces:
+    #% for interface in item.interfaces %#
       - deviceSelector:
-          hardwareAddr: "#{ item.mac_addr | lower }#"
-        #% if node_vlan_tag %#
+          hardwareAddr: "#{ interface.mac_addr | lower }#"
+        #% if interface.vlan %#
         vlans:
-          - vlanId: #{ node_vlan_tag }#
+          - vlanId: #{ interface.vlan }#
             addresses:
-              - "#{ item.address }#/#{ node_cidr.split('/') | last }#"
+              - "#{ interface.address }#/#{ node_network.split('/') | last }#"
             mtu: #{ item.mtu | default(1500, true) }#
+            #% if interface.default %#
             routes:
               - network: "0.0.0.0/0"
+                #% if node_default_gateway %#
                 gateway: "#{ node_default_gateway }#"
+                #% else %#
+                gateway: "#{ node_network | nthhost(1) }#"
+                #% endif %#
             #% if item.controller %#
             vip:
               ip: "#{ cluster_api_addr }#"
             #% endif %#
+            #% endif %#
         #% else %#
+        #% if interface.address %#
         dhcp: false
         addresses:
-          - "#{ item.address }#/#{ node_cidr.split('/') | last }#"
+          - "#{ interface.address }#/#{ node_cidr.split('/') | last }#"
+
+        #% if interface.default %#
         routes:
           - network: "0.0.0.0/0"
+            #% if node_default_gateway %#
             gateway: "#{ node_default_gateway }#"
-        mtu: #{ item.mtu | default(1500, true) }#
+            #% else %#
+            gateway: "#{ node_network | nthhost(1) }#"
+            #% endif %#
         #% if item.controller %#
         vip:
           ip: "#{ cluster_api_addr }#"
         #% endif %#
         #% endif %#
+        mtu: #{ item.mtu | default(1500, true) }#
+        #% else %#
+        ignore: true
+        #% endif %#
+        #% endif %#
+    #% endfor %#
     #% if talos_patches('%s' % (item.name)) | length == 0 %#
     #% if item.encrypt_disk | default(false, true) %#
     patches:

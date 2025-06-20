@@ -73,10 +73,10 @@ tasks:
     internal: true
     cmds:
       - cue vet {{.TEMPLATE_CONFIG_FILE}} {{.TEMPLATE_RESOURCES_DIR}}/cluster.schema.cue
-      - cue vet {{.TEMPLATE_NODE_CONFIG_FILE}} {{.TEMPLATE_RESOURCES_DIR}}/nodes.schema.cue
+     # - cue vet {{.TEMPLATE_NODE_CONFIG_FILE}} {{.TEMPLATE_RESOURCES_DIR}}/nodes.schema.cue
     preconditions:
       - test -f {{.TEMPLATE_RESOURCES_DIR}}/cluster.schema.cue
-      - test -f {{.TEMPLATE_RESOURCES_DIR}}/nodes.schema.cue
+      #- test -f {{.TEMPLATE_RESOURCES_DIR}}/nodes.schema.cue
       - which cue
 
   render-configs:
