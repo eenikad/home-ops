@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/rook
+metadata:
+  name: rook-ceph-mon
+  namespace: rook-ceph-external
+stringData:
+  cluster-name: rook-ceph-external
+  admin-secret: ${SECRET_ROOK_EXTERNAL_ADMIN_SECRET}
+  ceph-secret: ${SECRET_ROOK_EXTERNAL_USER_SECRET}
+  ceph-username: ${SECRET_ROOK_EXTERNAL_USERNAME}
+  fsid: ${SECRET_ROOK_EXTERNAL_FSID}
+  mon-secret: ${SECRET_ROOK_EXTERNAL_MONITOR_SECRET}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rook-ceph-mon-endpoints
+  namespace: rook-ceph-external
+data:
+  data: pve01=${CEPH1_NODE}:6789,pve02=${CEPH2_NODE}:6789,pve03=${CEPH3_NODE}:6789
+  mapping: '{"node":{}}'
+  maxMonId: "2"
