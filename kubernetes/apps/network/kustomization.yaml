@@ -9,3 +9,5 @@ resources:
   - ./cloudflare-dns/ks.yaml
   - ./cloudflare-tunnel/ks.yaml
   - ./k8s-gateway/ks.yaml
+  - ./multus/ks.yaml
+  - ./whereabouts/ks.yaml
