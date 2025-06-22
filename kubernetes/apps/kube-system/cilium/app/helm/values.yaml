@@ -14,7 +14,7 @@ cgroup:
     enabled: false
   hostRoot: /sys/fs/cgroup
 # NOTE: devices might need to be set if you have more than one active NIC on your hosts
-# devices: eno+ eth+
+devices: ens18 #eno+ eth+
 dashboards:
   enabled: true
 endpointRoutes:
