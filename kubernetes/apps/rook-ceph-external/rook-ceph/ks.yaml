@@ -89,10 +89,10 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
-    postBuild:
-      substituteFrom:
-        - name: cluster-secrets
-          kind: Secret
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   wait: false
   interval: 30m
   retryInterval: 1m
