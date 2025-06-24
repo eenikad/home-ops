@@ -63,8 +63,6 @@ spec:
       namespace: network
     - name: whereabouts
       namespace: network
-    # - name: rook-ceph-haproxy
-    #   namespace: *namespace
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
