@@ -19,6 +19,10 @@ spec:
       kind: HelmRelease
       name: *app
       namespace: *namespace
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   interval: 1h
   path: ./kubernetes/apps/volsync-system/volsync/app
   prune: true
