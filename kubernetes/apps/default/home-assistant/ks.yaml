@@ -26,7 +26,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_SECRET: "${APP}-volsync"
       GATUS_SUBDOMAIN: hass
       VOLSYNC_CAPACITY: 5Gi
     substituteFrom:
