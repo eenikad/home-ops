@@ -19,6 +19,15 @@ spec:
   values:
     controllers:
       home-assistant:
+        pod:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |
+              [{
+                "name":"multus-iot",
+                "namespace": "network",
+                "ips": ["10.20.0.100/24"],
+                "mac": "3e:59:e4:f7:43:08"
+              }]
         containers:
           home-assistant:
             image:
