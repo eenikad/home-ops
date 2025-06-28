@@ -60,12 +60,13 @@ spec:
                 memory: 4Gi
     defaultPodOptions:
       securityContext:
-        #runAsNonRoot: true
-        runAsUser: 0
-        runAsGroup: 0
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [44]
+        # video group
+        #supplementalGroups: [44]
     service:
       app:
     #     type: LoadBalancer
