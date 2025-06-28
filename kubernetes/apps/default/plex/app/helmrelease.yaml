@@ -60,7 +60,7 @@ spec:
                 memory: 4Gi
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
+        #runAsNonRoot: true
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 1000
