@@ -28,7 +28,7 @@ spec:
               tag: 1.41.8.9834@sha256:40e620ffcdc65331a0c2a7ed9a95700da7d527244f33c21bd35fc30aa25f19ea
             env:
               TZ: Europe/Berlin
-              PLEX_ADVERTISE_URL: https://plex.anneken.cloud:443,http://192.168.1.221:32400
+              PLEX_ADVERTISE_URL: https://plex.anneken.cloud:443,http://10.10.0.220:32400
               PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24
             probes:
               liveness: &probes
@@ -105,7 +105,7 @@ spec:
           - path: /config/Library/Application Support/Plex Media Server/Cache
       media:
         type: nfs
-        server: 10.10.0.205
+        server: 10.10.0.150
         path: /mnt/default/media/movies
         globalMounts:
           - path: /media/movies
