@@ -111,6 +111,13 @@ spec:
         globalMounts:
           - path: /media/movies
             readOnly: true
+      tv:
+        type: nfs
+        server: 10.10.0.150
+        path: /mnt/default/media/tv
+        globalMounts:
+          - path: /media/tv
+            readOnly: true
       tmpfs:
         type: emptyDir
         advancedMounts:
