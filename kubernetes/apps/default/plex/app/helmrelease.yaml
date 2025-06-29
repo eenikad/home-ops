@@ -28,7 +28,7 @@ spec:
               tag: 1.41.8.9834@sha256:40e620ffcdc65331a0c2a7ed9a95700da7d527244f33c21bd35fc30aa25f19ea
             env:
               TZ: Europe/Berlin
-              PLEX_ADVERTISE_URL: https://plex.anneken.cloud:443,http://10.10.0.220:32400
+              PLEX_ADVERTISE_URL: https://plex.anneken.cloud:443,http://10.10.0.230:32400
               PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24
             probes:
               liveness: &probes
@@ -69,9 +69,9 @@ spec:
         #supplementalGroups: [44]
     service:
       app:
-    #     type: LoadBalancer
-    #     annotations:
-    #       lbipam.cilium.io/ips: 192.168.42.128, ::ffff:192.168.42.128
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 10.10.0.230
         ports:
           http:
             port: *port
