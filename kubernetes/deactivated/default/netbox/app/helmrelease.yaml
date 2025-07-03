@@ -1,0 +1,117 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app netbox
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: netbox
+  values:
+    commonLabels:
+      postgres: "true"
+      teleport: enabled
+    commonAnnotations:
+      reloader.stakater.com/auto: "true"
+    initContainers:
+      - name: init-db
+        image: ghcr.io/home-operations/postgres-init:17
+        envFrom:
+          - secretRef:
+              name: netbox-secret
+    superuser:
+      name: drag0n141
+      email: server.netbox@${SECRET_DOMAIN_SHORT}
+    admins:
+      - ["drag0n141", "server.netbox@${SECRET_DOMAIN_SHORT}"]
+    loginRequired: true
+    timeZone: ${TIMEZONE}
+    dateFormat: "j. F, Y"
+    shortDateFormat: "j.m.Y"
+    timeFormat: "G:i"
+    shortTimeFormat: "H:i:s"
+    dateTimeFormat: "j. F, Y g:i a"
+    shortDateTimeFormat: "j.m.Y H:i"
+    storages:
+      default:
+        BACKEND: "storages.backends.s3.S3Storage"
+        OPTIONS:
+          AWS_STORAGE_BUCKET_NAME: "netbox"
+          AWS_S3_ENDPOINT_URL: "https://s3.${SECRET_DOMAIN_INTERNAL}"
+          AWS_S3_REGION_NAME: "us-east-1"
+    existingSecret: netbox-secret
+    metricsEnabled: true
+    postgresql:
+      enabled: false
+    valkey:
+      enabled: false
+    tasksDatabase:
+      host: dragonfly.database.svc.cluster.local
+      database: 3
+      existingSecretName: "netbox-secret"
+      existingSecretKey: "REDIS_PASSWORD"
+    cachingDatabase:
+      host: dragonfly.database.svc.cluster.local
+      database: 4
+      existingSecretName: "netbox-secret"
+      existingSecretKey: "REDIS_PASSWORD"
+    externalDatabase:
+      host: postgres17-rw.database.svc.cluster.local
+      port: 5432
+      database: netbox_db
+      username: netbox
+      existingSecretName: "netbox-secret"
+      existingSecretKey: "NETBOX_PG_PASS"
+    email:
+      server: smtp-relay.networking.svc.cluster.local
+      port: 2525
+      from: netbox@${SECRET_DOMAIN}
+    persistence:
+      enabled: false
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      timeoutSeconds: 1
+      periodSeconds: 10
+      successThreshold: 1
+    service:
+      annotations:
+        teleport.dev/name: *app
+    ingress:
+      enabled: true
+      className: traefik-internal
+      annotations:
+        external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN_INTERNAL}"
+        traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+        traefik.ingress.kubernetes.io/router.middlewares: "networking-traefik-middleware-chain-no-auth@kubernetescrd"
+      hosts:
+        - host: &host "netbox.${SECRET_DOMAIN_INTERNAL}"
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: netbox
+                  port:
+                    number: 80
+      tls:
+        - hosts:
+            - *host
+          secretName: "${SECRET_DOMAIN/./-}-production-tls"
+    extraConfig:
+      - secret:
+          secretName: netbox-secret
+    housekeeping:
+      enabled: false
+    worker:
+      enabled: false
+  valuesFrom:
+    - targetPath: storages.default.OPTIONS.AWS_ACCESS_KEY_ID
+      kind: Secret
+      name: netbox-secret
+      valuesKey: AWS_ACCESS_KEY_ID
+    - targetPath: storages.default.OPTIONS.AWS_SECRET_ACCESS_KEY
+      kind: Secret
+      name: netbox-secret
+      valuesKey: AWS_SECRET_ACCESS_KEY

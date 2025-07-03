@@ -1,0 +1,97 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: esphome-code
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+
+  install:
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  uninstall:
+    keepHistory: false
+
+  dependsOn:
+    - name: esphome
+      namespace: home
+
+  values:
+    controllers:
+      main:
+        type: statefulset
+
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.101.2@sha256:5f654c1137f8d87c8cf44253318bf94b85f6f9129e426a9956da46eb602dcc5a
+
+            args:
+              - --auth
+              - none
+              - --user-data-dir
+              - /config/.vscode
+              - --extensions-dir
+              - /config/.vscode
+              - --port
+              - "8080"
+              - /config
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 120M
+              limits:
+                memory: 120M
+
+        pod:
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            fsGroup: 0
+            fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      main:
+        controller: main
+        ports:
+          http:
+            port: &httpPort 8080
+
+    ingress:
+      main:
+        className: internal
+        annotations:
+          hajimari.io/enable: "true"
+          hajimari.io/icon: cib:visual-studio-code
+          hajimari.io/group: "home automation"
+          hajimari.io/appName: "ESPHome Configuration"
+          hajimari.io/instance: "admin"
+        hosts:
+          - host: &host "esphome-code.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: *httpPort
+
+    persistence:
+      config:
+        existingClaim: esphome-config
+        globalMounts:
+          - path: /config

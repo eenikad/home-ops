@@ -1,0 +1,125 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ollama
+  namespace: ai
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+
+  maxHistory: 2
+
+  install:
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    controllers:
+      backend:
+        type: statefulset
+
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          main:
+            image:
+              repository: docker.io/ollama/ollama
+              tag: 0.9.5@sha256:64fcc2a7c48ae920f5317264031d86414e30417269631822858c6d23f61100b0
+
+            env:
+              #LIBVA_DRIVER_NAME: i965
+              OLLAMA_HOST: 0.0.0.0
+              OLLAMA_ORIGINS: "*"
+              OLLAMA_LOG_LEVEL: debug
+              OLLAMA_MODELS: &pvc /models
+              OLLAMA_LOAD_TIMEOUT: 10m
+              # https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-set-the-quantization-type-for-the-kv-cache
+              OLLAMA_KV_CACHE_TYPE: q8_0
+              OLLAMA_FLASH_ATTENTION: 1
+
+            securityContext:
+              privileged: true
+
+            resources:
+              requests:
+                memory: 6G
+                cpu: 2000m
+                nvidia.com/gpu: 1
+              limits:
+                memory: 6G
+                nvidia.com/gpu: 1
+
+        pod:
+          runtimeClassName: nvidia
+
+          priorityClassName: ai-gpu-critical
+
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: nvidia.com/gpu.present
+                        operator: In
+                        values:
+                          - "true"
+
+          nodeSelector:
+            nvidia.com/gpu.present: "true"
+
+    service:
+      backend:
+        controller: backend
+        ports:
+          http:
+            port: &port 11434
+
+    ingress:
+      backend:
+        className: internal
+        hosts:
+          - host: &host ollama.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: backend
+                  port: *port
+
+    persistence:
+      data:
+        existingClaim: ollama-data-pvc
+        advancedMounts:
+          backend:
+            main:
+              - path: /.ollama
+
+      # PV needs to be on the node running Ollama. I'm currently using a Longhorn volume with 1 replica
+      # and locality set to 'strict-local' so that I ensure it gets scheduled onto the right node. If
+      # I don't do this then I get model loading timeouts from the clients: https://github.com/ollama/ollama/issues/9016
+      models:
+        existingClaim: ollama-models-pvc
+        advancedMounts:
+          backend:
+            main:
+              - path: *pvc
+
+      tmp:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        globalMounts:
+          - path: /tmp

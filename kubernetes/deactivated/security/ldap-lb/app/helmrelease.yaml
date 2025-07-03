@@ -1,0 +1,63 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app ldap-lb
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      ldap-lb:
+        replicas: 2
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: public.ecr.aws/docker/library/haproxy
+              tag: 3.2.2-alpine@sha256:86a23059cd1422671f6db178dfc37ea247505c6face3b55a60294b60048ecbd3
+            env:
+              TZ: ${TIMEZONE}
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 100Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 99
+        runAsGroup: 99
+        fsGroup: 99
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: 8080
+          ldaps:
+            port: 636
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+    persistence:
+      config:
+        type: configMap
+        name: ldap-lb-configmap
+        globalMounts:
+          - path: /usr/local/etc/haproxy/haproxy.cfg
+            subPath: haproxy.cfg
+            readOnly: true

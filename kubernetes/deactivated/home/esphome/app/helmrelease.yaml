@@ -1,0 +1,124 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: esphome
+  namespace: home
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+
+  maxHistory: 3
+
+  install:
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    controllers:
+      main:
+        type: statefulset
+
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          priorityClassName: home-cluster-critical
+
+          annotations:
+            k8s.v1.cni.cncf.io/networks: esphome-iot-static
+
+          # IOT VLAN (20)
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: node.network/vlan-iot
+                        operator: In
+                        values:
+                          - "true"
+
+        containers:
+          main:
+            image:
+              repository: ghcr.io/home-operations/esphome
+              tag: 2025.6.2@sha256:6f1eab2a1e6839f19c5021ae5cee1665a878e5da25558c0eb949086a0563aef4
+
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+
+            resources:
+              requests:
+                cpu: 20m
+                memory: 400M
+              limits:
+                memory: 6G # needs to burst up when compiling
+
+            securityContext:
+              runAsNonRoot: false
+              readOnlyRootFilesystem: false
+              privileged: true
+              capabilities:
+                add:
+                  - NET_ADMIN
+                  - NET_RAW
+
+            env:
+              ESPHOME_DASHBOARD_USE_PING: true
+              ESPHOME__INSTANCE_NAME: ESPHome
+              ESPHOME__PORT: &httpPort 6052
+              ESPHOME__APPLICATION_URL: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+              ESPHOME__LOG_LEVEL: info
+
+    service:
+      main:
+        controller: main
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: ${SVC_ESPHOME_ADDR}
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: *httpPort
+
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        annotations:
+          hajimari.io/enable: "true"
+          hajimari.io/instance: "admin"
+          hajimari.io/appName: "ESPHome"
+          hajimari.io/icon: mdi:chip
+          hajimari.io/group: "home automation"
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: *httpPort
+
+    persistence:
+      config:
+        existingClaim: esphome-config
+        globalMounts:
+          - path: /config

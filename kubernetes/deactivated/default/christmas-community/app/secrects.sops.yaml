@@ -1,0 +1,17 @@
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: christmas-community
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    name: christmas-community-secret
+    template:
+      data:
+        GUEST_PASSWORD: "{{ .GUEST_PASSWORD }}"
+  dataFrom:
+    - extract:
+        key: christmas-community

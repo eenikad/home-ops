@@ -1,0 +1,67 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app teleport-kube-agent
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: teleport-kube-agent
+      version: 17.4.2
+      sourceRef:
+        kind: HelmRepository
+        name: teleport
+  values:
+    log:
+      level: INFO
+    roles: kube,app,discovery,node,windowsdesktop
+    insecureSkipProxyTLSVerify: true
+    proxyAddr: teleport.${SECRET_DOMAIN}:443
+    joinParams:
+      method: kubernetes
+      tokenName: kubernetes-token
+    kubeClusterName: HomeOpsCluster
+    teleportConfig:
+      discovery_service:
+        kubernetes:
+        - types: ["app"]
+          namespaces: ["*"]
+          labels:
+            teleport: enabled
+      windows_desktop_service:
+        enabled: yes
+        show_desktop_wallpaper: true
+        ldap:
+          addr: ldap-lb.security.svc.cluster.local:636
+          insecure_skip_verify: true
+          domain: ${SECRET_DOMAIN_AD}
+          username: svc-teleport
+          sid: S-1-5-21-2393014043-1219914493-3909707514-17103
+        discovery:
+          base_dn: '*'
+      app_service:
+        enabled: yes
+        apps:
+        - name: checkmk
+          public_addr: checkmk.${SECRET_DOMAIN_TELEPORT}
+          uri: http://checkmk.${SECRET_DOMAIN_INT}/checkmk
+          rewrite:
+            headers:
+              - "Host: checkmk.${SECRET_DOMAIN_TELEPORT}"
+          insecure_skip_verify: true
+        - name: nas01
+          public_addr: nas01.${SECRET_DOMAIN_TELEPORT}
+          uri: http://nas01.${SECRET_DOMAIN_INT}:88
+          rewrite:
+            headers:
+              - "Host: nas01.${SECRET_DOMAIN_TELEPORT}"
+          insecure_skip_verify: true
+        - name: pikvm
+          public_addr: pikvm.${SECRET_DOMAIN_TELEPORT}
+          uri: http://pikvm.${SECRET_DOMAIN_INT}
+          insecure_skip_verify: true
+        - name: prx
+          public_addr: prx.${SECRET_DOMAIN_TELEPORT}
+          uri: https://prx.${SECRET_DOMAIN_INT}:8006
+          insecure_skip_verify: true

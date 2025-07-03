@@ -1,0 +1,74 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app authentik
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: authentik
+  values:
+    global:
+      additionalLabels:
+        postgres: "true"
+      deploymentAnnotations:
+        reloader.stakater.com/auto: "true"
+      deploymentStrategy:
+        type: RollingUpdate
+      envFrom: &envFrom
+        - secretRef:
+            name: authentik-secret
+    authentik:
+      log_level: info
+      email:
+        host: smtp-relay.networking.svc.cluster.local
+        from: authentik@${SECRET_DOMAIN}
+        port: 2525
+        use_tls: false
+      error_reporting:
+        enabled: false
+        send_pii: false
+    server:
+      initContainers:
+        - name: init-db
+          image: ghcr.io/home-operations/postgres-init:17
+          envFrom: *envFrom
+      resources:
+        requests:
+          cpu: 50m
+          memory: 500Mi
+        limits:
+          memory: 800Mi
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      ingress:
+        enabled: true
+        ingressClassName: traefik-external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          traefik.ingress.kubernetes.io/router.middlewares: "networking-traefik-middleware-chain-no-auth@kubernetescrd"
+        hosts:
+        - auth.${SECRET_DOMAIN}
+        pathType: "Prefix"
+        paths:
+          - "/"
+        tls:
+        - hosts:
+          - auth.${SECRET_DOMAIN}
+          secretName: "${SECRET_DOMAIN/./-}-production-tls"
+    worker:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 5m
+          memory: 200Mi
+        limits:
+          memory: 600Mi
+    postgresql:
+      enabled: false
+    redis:
+      enabled: false

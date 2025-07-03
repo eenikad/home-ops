@@ -1,0 +1,123 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: emqx
+  namespace: home
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: emqx
+      # renovate: registryUrl=https://repos.emqx.io/charts
+      version: 5.8.7
+      sourceRef:
+        kind: HelmRepository
+        name: emqx-charts
+        namespace: flux-system
+
+  maxHistory: 3
+
+  install:
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    priorityClassName: home-cluster-critical
+
+    image:
+      repository: public.ecr.aws/emqx/emqx
+
+    replicaCount: 3
+    recreatePods: true
+
+    emqxConfig:
+      EMQX_ALLOW_ANONYMOUS: "false"
+      EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
+      EMQX_DASHBOARD__DEFAULT_USERNAME: admin
+
+    service:
+      type: LoadBalancer
+      annotations:
+        io.cilium/lb-ipam-ips: ${SVC_EMQX_ADDR}
+      externalTrafficPolicy: Cluster
+
+    ingress:
+      dashboard:
+        enabled: true
+        ingressClassName: internal
+        annotations:
+          hajimari.io/enable: "true"
+          hajimari.io/appName: "EMQX"
+          hajimari.io/icon: simple-icons:eclipsemosquitto
+          hajimari.io/group: "home automation"
+          hajimari.io/instance: "admin"
+        path: /
+        pathType: Prefix
+        hosts:
+          - &host "emqx.${SECRET_DOMAIN}"
+
+    metrics:
+      enabled: false
+
+    securityContext:
+      privileged: true
+      capabilities:
+        add:
+          - NET_ADMIN
+          - NET_RAW
+
+    probles:
+      startup:
+        enabled: false
+      readiness:
+        enabled: false
+      liveness:
+        enabled: false
+
+    persistence:
+      enabled: true
+      storageClassName: ceph-block
+      size: 1Gi
+
+    resources:
+      requests:
+        cpu: 30m
+        memory: 500M
+      limits:
+        memory: 500M
+
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values: ["emqx"]
+              topologyKey: kubernetes.io/hostname
+
+  valuesFrom:
+    - targetPath: emqxConfig.EMQX_DASHBOARD__DEFAULT_PASSWORD
+      kind: Secret
+      name: emqx
+      valuesKey: admin_password
+    - targetPath: emqxConfig.EMQX_AUTH__USER__1__USERNAME
+      kind: Secret
+      name: emqx
+      valuesKey: user_1_username
+    - targetPath: emqxConfig.EMQX_AUTH__USER__1__PASSWORD
+      kind: Secret
+      name: emqx
+      valuesKey: user_1_password
