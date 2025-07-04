@@ -22,14 +22,16 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
-          - name: fix-permissions
-            image: busybox
-            command: ["sh", "-c", "chown -R 1000:1000 /config"]
+          fix-permissions:
+            image:
+              repository: busybox
+              tag: latest
+            command: ["sh", "-c", "ls -la /config; chown -v -R 1000:1000 /config"]
+            securityContext:
+              runAsUser: 0
             volumeMounts:
               - name: config
                 mountPath: /config
-            securityContext:
-              runAsUser: 0
         containers:
           app:
             image:
