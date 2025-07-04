@@ -81,7 +81,7 @@ spec:
               tag: 2.5.0
             args:
               - --model=small
-              - --language=en
+              - --language=de
 
             resources:
               requests:
@@ -111,7 +111,7 @@ spec:
       piper:
         type: LoadBalancer
         annotations:
-          io.cilium/lb-ipam-ips: ${SVC_WYOMING_PIPER_ADDR}
+          io.cilium/lb-ipam-ips: 10.10.0.231
         controller: piper
         ports:
           http:
@@ -121,7 +121,7 @@ spec:
         type: LoadBalancer
         controller: whisper
         annotations:
-          io.cilium/lb-ipam-ips: ${SVC_WYOMING_WHISPER_ADDR}
+          io.cilium/lb-ipam-ips: 10.10.0.232
         ports:
           http:
             port: 10300
@@ -131,7 +131,7 @@ spec:
         type: LoadBalancer
         controller: openwakeword
         annotations:
-          io.cilium/lb-ipam-ips: ${SVC_WYOMING_WAKEWORD_ADDR}
+          io.cilium/lb-ipam-ips: 10.10.0.233
         ports:
           http:
             port: 10400
