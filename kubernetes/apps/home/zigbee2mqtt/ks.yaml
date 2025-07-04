@@ -18,6 +18,10 @@ spec:
   targetNamespace: home
   path: ./kubernetes/apps/home/zigbee2mqtt/app
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   sourceRef:
     kind: GitRepository
     name: flux-system
