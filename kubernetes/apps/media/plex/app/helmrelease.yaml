@@ -67,15 +67,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         # video group
         #supplementalGroups: [44]
-      initContainers:
-          - name: fix-permissions
-            image: busybox:latest
-            command: ["sh", "-c", "chown -R 1000:1000 /config"]
-            securityContext:
-              runAsUser: 0
-            volumeMounts:
-              - name: config
-                mountPath: /config
     service:
       app:
         type: LoadBalancer
