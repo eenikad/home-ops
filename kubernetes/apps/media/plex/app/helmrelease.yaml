@@ -25,9 +25,9 @@ spec:
           init-permissions:
             image: busybox
             command: ["sh", "-c", "chown -R 1000:1000 /config"]
-            volumeMounts:
-              - name: config
-                mountPath: /config
+            # volumeMounts:
+            #   - name: config
+            #     mountPath: /config
             securityContext:
               runAsUser: 0
         containers:
