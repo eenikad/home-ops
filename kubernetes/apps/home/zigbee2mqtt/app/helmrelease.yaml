@@ -29,7 +29,7 @@ spec:
 
   values:
     controllers:
-      main:
+      app:
         type: statefulset
 
         annotations:
@@ -38,18 +38,18 @@ spec:
         pod:
           priorityClassName: home-cluster-critical
 
-          affinity:
-            nodeAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                  - matchExpressions:
-                      - key: zigbee.feature.node.kubernetes.io/sonoff
-                        operator: In
-                        values:
-                          - "true"
+          # affinity:
+          #   nodeAffinity:
+          #     requiredDuringSchedulingIgnoredDuringExecution:
+          #       nodeSelectorTerms:
+          #         - matchExpressions:
+          #             - key: zigbee.feature.node.kubernetes.io/sonoff
+          #               operator: In
+          #               values:
+          #                 - "true"
 
-          nodeSelector:
-            zigbee.feature.node.kubernetes.io/sonoff: "true"
+          # nodeSelector:
+          #   zigbee.feature.node.kubernetes.io/sonoff: "true"
 
         containers:
           main:
@@ -73,17 +73,17 @@ spec:
               ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: "true"
               ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE: 60
               ZIGBEE2MQTT_CONFIG_MQTT_REJECT_UNAUTHORIZED: "true"
-              ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx.home.svc.cluster.local:1883
+              # ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx.home.svc.cluster.local:1883
               ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
               ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
-              ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE: 115200
-              ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: "false"
-              ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &serialdevice /dev/ttyACM0
-              ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: zstack
+              # ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE: 115200
+              # ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: "false"
+              # ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &serialdevice /dev/ttyACM0
+              # ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: zstack
 
-            envFrom:
-              - secretRef:
-                  name: zigbee2mqtt-secret
+            # envFrom:
+            #   - secretRef:
+            #       name: zigbee2mqtt-secret
 
             probes:
               liveness:
@@ -106,9 +106,19 @@ spec:
               limits:
                 memory: 300M
 
+    # service:
+    #   main:
+    #     controller: main
+    #     ports:
+    #       http:
+    #         primary: true
+    #         port: *port
+    #       websocket:
+    #         enabled: true
+    #         port: 9000
+
     service:
-      main:
-        controller: main
+      app:
         ports:
           http:
             primary: true
@@ -118,7 +128,7 @@ spec:
             port: 9000
 
     serviceMonitor:
-      main:
+      app:
         serviceName: &app zigbee
         enabled: true
         endpoints:
@@ -128,33 +138,28 @@ spec:
             interval: 1m
             scrapeTimeout: 10s
 
-    ingress:
-      main:
-        enabled: true
-        className: internal
-        annotations:
-          hajimari.io/enable: "true"
-          hajimari.io/appName: "Zigbee 2 MQTT"
-          hajimari.io/icon: mdi:zigbee
-          hajimari.io/group: "home automation"
-          hajimari.io/instance: "admin"
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: *port
+    route:
+      app:
+        hostnames:
+          - zigbee.anneken.cloud
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: http
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
 
     persistence:
       config:
-        existingClaim: zigbee2mqtt-config-pvc
+        existingClaim: zigbee2mqtt
         globalMounts:
           - path: *datadir
 
-      usb:
-        type: hostPath
-        hostPath: /dev/sonoff
-        hostPathType: CharDevice
-        globalMounts:
-          - path: *serialdevice
+      # usb:
+      #   type: hostPath
+      #   hostPath: /dev/sonoff
+      #   hostPathType: CharDevice
+      #   globalMounts:
+      #     - path: *serialdevice
