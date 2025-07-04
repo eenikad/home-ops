@@ -48,6 +48,3 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: true
-  dependsOn:
-    - name: multus
-      namespace: network
