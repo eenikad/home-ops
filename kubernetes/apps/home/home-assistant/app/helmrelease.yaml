@@ -29,7 +29,7 @@ spec:
         #         "mac": "3e:59:e4:f7:43:08"
         #       }]
         containers:
-          home-assistant:
+          app:
             image:
               repository: ghcr.io/home-operations/home-assistant
               tag: 2025.7.0
@@ -84,8 +84,11 @@ spec:
     persistence:
       config:
         existingClaim: home-assistant
-        globalMounts:
-          - path: /config
+        advancedMounts:
+          home-assistant:
+            app:
+              - path: /config
+
       config-cache:
         existingClaim: home-assistant-cache
         advancedMounts:
