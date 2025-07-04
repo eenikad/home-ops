@@ -34,6 +34,7 @@ spec:
               repository: ghcr.io/home-operations/home-assistant
               tag: 2025.7.0
             env:
+              VENV_FOLDER: /venv
               TZ: Europe/Berlin
               HOME_ASSISTANT_EXTERNAL_URL: https://{{ .Release.Name }}.anneken.cloud
               HOME_ASSISTANT_PURGE_KEEP_DAYS: 30
@@ -85,23 +86,21 @@ spec:
         existingClaim: home-assistant
         globalMounts:
           - path: /config
-      # config-cache:
-      #   existingClaim: home-assistant-cache
-      #   advancedMounts:
-      #     home-assistant:
-      #       app:
-      #         - path: /venv
-      #           subPath: hass-venv
+      config-cache:
+        existingClaim: home-assistant-cache
+        advancedMounts:
+          home-assistant:
+            app:
+              - path: /venv
+                subPath: hass-venv
       tmpfs:
         type: emptyDir
         advancedMounts:
           home-assistant:
             app:
-              - path: /config/.venv
-                subPath: .venv
-              - path: /config/logs
-                subPath: logs
-              - path: /config/tts
-                subPath: tts
+              # - path: /config/logs
+              #   subPath: logs
+              # - path: /config/tts
+              #   subPath: tts
               - path: /tmp
                 subPath: tmp
