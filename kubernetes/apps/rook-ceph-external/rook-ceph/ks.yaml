@@ -42,6 +42,9 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: true
+  dependsOn:
+    - name: multus
+      namespace: network
   interval: 30m
   retryInterval: 1m
   timeout: 5m
