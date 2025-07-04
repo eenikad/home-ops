@@ -3,7 +3,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app multus
+  namespace: network
 spec:
+  timeout: 10m0s
   interval: 1h
   chartRef:
     kind: OCIRepository
@@ -59,7 +61,8 @@ spec:
           subjects:
             - identifier: multus
     serviceAccount:
-      multus: {}
+      multus:
+        create: true
     persistence:
       etc-cni-net-d:
         type: hostPath
