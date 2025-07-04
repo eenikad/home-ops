@@ -61,8 +61,7 @@ spec:
           subjects:
             - identifier: multus
     serviceAccount:
-      create: true
-      name: multus
+      multus: {}
     persistence:
       etc-cni-net-d:
         type: hostPath
