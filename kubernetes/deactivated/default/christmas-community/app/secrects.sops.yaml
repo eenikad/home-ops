@@ -1,4 +1,3 @@
----
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
@@ -11,7 +10,23 @@ spec:
     name: christmas-community-secret
     template:
       data:
-        GUEST_PASSWORD: "{{ .GUEST_PASSWORD }}"
+        GUEST_PASSWORD: ENC[AES256_GCM,data:Tx7Okz1ImhJJ8rPCuz8ErDQ7iZxz,iv:scv+f23GToVSdzDxNQLts3az+kM0WGABm+wWzIK54TI=,tag:H8LJ/6QWaYnM6gKopSl8xw==,type:str]
   dataFrom:
     - extract:
         key: christmas-community
+sops:
+  age:
+    - recipient: age1pguzgl6ueghhdzlzwelhl9asavxnr9jytr82mcarhswf0gw39gssvhcccm
+      enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRTWQwYTlUdWJhdC80ZU41
+        MDJJOEhxc3VkM1NqV3o1VGxabFJtQzhlVVRnCnl5OVZxOEdVQytjTFdaT0NWNzRh
+        akt0Ym5RL09OS0VZZnJqN0lSMi9ybWMKLS0tIHp0dkQrQlVma2k1UXhURlFQKzR4
+        UWRHT0J6RnB6U1c0ek95TExIM0tqYXcK5C7GocxYkVAeblkahELYC+gRlM5+VUTe
+        rZEIs2MuzIs4VKB1c5sUQctUER9XMNpo4LiVKU+3VHeE6hP2s47o2A==
+        -----END AGE ENCRYPTED FILE-----
+  lastmodified: "2025-07-05T19:43:35Z"
+  mac: ENC[AES256_GCM,data:V2eeQFdZSuM3f+KE4vbwnk8dwiljosQaUFDeOzSw7lEUPu8CJY32lmtk5d1PTOo4PPVnzqMkkqkVxC6+lzLOqkGFbPu1IRuiqOPBQcMw2ibf0+SnqgbqcacLUOKxgg7yKdTdPPFaoECrCOi+Drx1haFZ6LL9TRfPfOXKLemBXwM=,iv:3REeKT7k0glnz7/1q1PT4Ff6IW55MQy/JZPJHes65VE=,tag:DKuX+J+7IXfVmUBy2gzqFg==,type:str]
+  encrypted_regex: ^(data|stringData)$
+  mac_only_encrypted: true
+  version: 3.10.2

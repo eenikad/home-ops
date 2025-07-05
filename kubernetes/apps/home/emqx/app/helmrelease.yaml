@@ -48,23 +48,36 @@ spec:
     service:
       type: LoadBalancer
       annotations:
-        io.cilium/lb-ipam-ips: ${SVC_EMQX_ADDR}
+        io.cilium/lb-ipam-ips: 10.10.0.235
       externalTrafficPolicy: Cluster
 
-    ingress:
-      dashboard:
-        enabled: true
-        ingressClassName: internal
-        annotations:
-          hajimari.io/enable: "true"
-          hajimari.io/appName: "EMQX"
-          hajimari.io/icon: simple-icons:eclipsemosquitto
-          hajimari.io/group: "home automation"
-          hajimari.io/instance: "admin"
-        path: /
-        pathType: Prefix
-        hosts:
-          - &host "emqx.${SECRET_DOMAIN}"
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.anneken.cloud"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+
+    # ingress:
+    #   dashboard:
+    #     enabled: true
+    #     ingressClassName: internal
+    #     annotations:
+    #       hajimari.io/enable: "true"
+    #       hajimari.io/appName: "EMQX"
+    #       hajimari.io/icon: simple-icons:eclipsemosquitto
+    #       hajimari.io/group: "home automation"
+    #       hajimari.io/instance: "admin"
+    #     path: /
+    #     pathType: Prefix
+    #     hosts:
+    #       - &host "emqx.${SECRET_DOMAIN}"
 
     metrics:
       enabled: false
@@ -96,28 +109,28 @@ spec:
       limits:
         memory: 500M
 
-    affinity:
-      podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                  - key: app.kubernetes.io/name
-                    operator: In
-                    values: ["emqx"]
-              topologyKey: kubernetes.io/hostname
+    # affinity:
+    #   podAntiAffinity:
+    #     preferredDuringSchedulingIgnoredDuringExecution:
+    #       - weight: 100
+    #         podAffinityTerm:
+    #           labelSelector:
+    #             matchExpressions:
+    #               - key: app.kubernetes.io/name
+    #                 operator: In
+    #                 values: ["emqx"]
+    #           topologyKey: kubernetes.io/hostname
 
   valuesFrom:
     - targetPath: emqxConfig.EMQX_DASHBOARD__DEFAULT_PASSWORD
       kind: Secret
-      name: emqx
+      name: emqx-secret
       valuesKey: admin_password
     - targetPath: emqxConfig.EMQX_AUTH__USER__1__USERNAME
       kind: Secret
-      name: emqx
+      name: emqx-secret
       valuesKey: user_1_username
     - targetPath: emqxConfig.EMQX_AUTH__USER__1__PASSWORD
       kind: Secret
-      name: emqx
+      name: emqx-secret
       valuesKey: user_1_password
