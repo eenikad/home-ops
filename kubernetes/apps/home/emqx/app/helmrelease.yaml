@@ -73,7 +73,7 @@ spec:
         rules:
           - backendRefs:
               - identifier: app
-                port: *port
+                port: 1883
 
     # ingress:
     #   dashboard:
