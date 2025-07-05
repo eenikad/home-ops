@@ -12,9 +12,9 @@ spec:
   targetNamespace: home
   path: ./kubernetes/apps/home/emqx/app
   postBuild:
-    substitute:
+    #substitute:
       # APP: *app
-      GATUS_SUBDOMAIN: mqtt
+      # GATUS_SUBDOMAIN: mqtt
       # VOLSYNC_CAPACITY: 5Gi
     substituteFrom:
       - name: cluster-secrets
@@ -25,7 +25,7 @@ spec:
     name: flux-system
     namespace: flux-system
   components:
-    - ../../../../components/gatus/external
+    #- ../../../../components/gatus/external
     # - ../../../../components/volsync
   dependsOn:
     # - name: mosquitto
