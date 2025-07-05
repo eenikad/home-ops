@@ -12,6 +12,10 @@ spec:
   targetNamespace: home
   path: ./kubernetes/apps/home/emqx/app
   postBuild:
+    substitute:
+      # APP: *app
+      GATUS_SUBDOMAIN: mqtt
+      # VOLSYNC_CAPACITY: 5Gi
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
