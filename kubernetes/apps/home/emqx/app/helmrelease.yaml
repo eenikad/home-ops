@@ -60,18 +60,18 @@ spec:
         io.cilium/lb-ipam-ips: 10.10.0.235
       externalTrafficPolicy: Cluster
 
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.anneken.cloud"
-        parentRefs:
-          - name: internal
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: 1883
+    # route:
+    #   app:
+    #     hostnames:
+    #       - "{{ .Release.Name }}.anneken.cloud"
+    #     parentRefs:
+    #       - name: internal
+    #         namespace: kube-system
+    #         sectionName: https
+    #     rules:
+    #       - backendRefs:
+    #           - identifier: app
+    #             port: 1883
 
     # ingress:
     #   dashboard:
