@@ -98,7 +98,7 @@ spec:
           - NET_ADMIN
           - NET_RAW
 
-    probles:
+    probes:
       startup:
         enabled: false
       readiness:
