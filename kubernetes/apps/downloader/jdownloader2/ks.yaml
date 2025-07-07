@@ -18,6 +18,10 @@ spec:
     - ../../../../components/volsync
   path: ./kubernetes/apps/downloader/jdownloader2/app
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   sourceRef:
     kind: GitRepository
     name: flux-system

@@ -18,6 +18,10 @@ spec:
     #   namespace: observability
     - name: rook-ceph-cluster
       namespace: rook-ceph-external
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   interval: 1h
   path: ./kubernetes/apps/media/jellyfin/app
   postBuild:
