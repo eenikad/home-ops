@@ -16,7 +16,7 @@ spec:
   components:
     - ../../../../components/gatus/external
     - ../../../../components/volsync
-  path: ./kubernetes/main/apps/downloader/jdownloader2/app
+  path: ./kubernetes/apps/downloader/jdownloader2/app
   prune: true
   sourceRef:
     kind: GitRepository
