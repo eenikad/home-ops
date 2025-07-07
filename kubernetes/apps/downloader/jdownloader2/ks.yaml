@@ -4,16 +4,19 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app jdownloader2
-  namespace: flux-system
+  namespace: downloader
 spec:
-  targetNamespace: default
+  targetNamespace: downloader
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph-external
-  path: ./kubernetes/main/apps/default/jdownloader2/app
+  components:
+    - ../../../../components/gatus/external
+    - ../../../../components/volsync
+  path: ./kubernetes/main/apps/downloader/jdownloader2/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -22,3 +25,10 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 5Gi
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret

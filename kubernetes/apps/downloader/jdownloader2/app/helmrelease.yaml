@@ -41,13 +41,14 @@ spec:
                 memory: 1G
               limits:
                 memory: 1G
-        # pod:
-        #   securityContext:
-        #     runAsUser: 568
-        #     runAsGroup: 568
-        #     fsGroup: 568
-        #     fsGroupChangePolicy: OnRootMismatch
-        #     supplementalGroups: [10000]
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            # supplementalGroups: [10000]
 
     service:
       main:
@@ -56,22 +57,40 @@ spec:
           http:
             port: &httpPort 5800
 
-    ingress:
+    # ingress:
+    #   main:
+    #     className: internal
+    #     hosts:
+    #       - host: &host downloader.${SECRET_DOMAIN}
+    #         paths:
+    #           - path: /
+    #             service:
+    #               identifier: main
+    #               port: *httpPort
+
+    route:
       main:
-        className: internal
-        hosts:
-          - host: &host downloader.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: *httpPort
+        hostnames: ["{{ .Release.Name }}.anneken.cloud"]
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: *httpPort
 
     persistence:
       config:
         existingClaim: jdownloader2
         globalMounts:
           - path: /config
+      downloads:
+        type: nfs
+        server: 10.10.0.150
+        path: /mnt/default/downloads
+        globalMounts:
+          - path: /output
 
       # downloads:
       #   existingClaim: jdownloader-downloads-pvc
