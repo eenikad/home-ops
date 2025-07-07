@@ -1,24 +1,9 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: downloads
-resources:
-  - ./pinchflat/ks.yaml
-  - ./prowlarr/ks.yaml
-  - ./sabnzbd/ks.yaml
+namespace: downloader
 components:
-  - ../../components/alerts
-  - ../../components/namespace
-  - ../../components/pod-gateway
-  - ../../components/repos
-  - ../../components/sops
-  - ../../components/substitutions
-patches:
-   - # Add the labels to the namespace
-     patch: |
-       - op: add
-         path: /metadata/labels
-         value:
-           routed-gateway: "true"
-     target:
-       kind: Namespace
+  - ../../components/common
+resources:
+  - ./jdownloader2/ks.yaml
