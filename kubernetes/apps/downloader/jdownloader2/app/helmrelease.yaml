@@ -86,7 +86,7 @@ spec:
       downloads:
         type: nfs
         server: 10.10.0.150
-        path: /mnt/default/downloads
+        path: /mnt/default/media/downloads
         globalMounts:
           - path: /output
 
