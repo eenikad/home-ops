@@ -21,6 +21,10 @@ spec:
     #   namespace: external-secrets
   path: "./kubernetes/apps/media/music-assistant/app"
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -35,3 +39,6 @@ spec:
       VOLSYNC_ACCESSMODES: ReadWriteOnce
       VOLSYNC_STORAGECLASS: ceph-rbd
       VOLSYNC_SNAPSHOTCLASS: ceph-rbd-snapshot
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
