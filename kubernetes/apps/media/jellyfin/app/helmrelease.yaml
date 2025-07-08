@@ -91,9 +91,9 @@ spec:
       media:
         type: nfs
         server: 10.10.0.150
-        path: /mnt/default/media/movies
+        path: /mnt/default/media/others
         globalMounts:
-          - path: /media/movies
+          - path: /media/others
             readOnly: true
       tmpfs:
         type: emptyDir
