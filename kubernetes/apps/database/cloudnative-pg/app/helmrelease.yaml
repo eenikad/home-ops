@@ -1,0 +1,60 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: cloudnative-pg
+  namespace: databases
+spec:
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.24.0
+  url: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
+
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudnative-pg
+  namespace: databases
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: cloudnative-pg
+      version: 0.24.0
+      sourceRef:
+        kind: HelmRepository
+        name: cloudnative-pg
+        namespace: databases
+
+  maxHistory: 3
+
+  install:
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    crds:
+      create: true
+
+    # priorityClassName: databases-cluster-critical
+
+    resources:
+      requests:
+        cpu: 20m
+        memory: 340M
+      limits:
+        memory: 340M
