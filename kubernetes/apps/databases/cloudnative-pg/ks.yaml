@@ -12,7 +12,7 @@ spec:
   retryInterval: 1m
   timeout: 5m
   targetNamespace: databases
-  path: ./kubernetes/main/apps/databases/cloudnative-pg/app
+  path: ./kubernetes/apps/databases/cloudnative-pg/app
   prune: true
   postBuild:
     substituteFrom:
@@ -52,7 +52,7 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
-  path: ./kubernetes/main/apps/databases/cloudnative-pg/config
+  path: ./kubernetes/apps/databases/cloudnative-pg/config
   prune: true
   wait: true
   sourceRef:
@@ -86,7 +86,7 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
-  path: ./kubernetes/main/apps/databases/cloudnative-pg/config/immich
+  path: ./kubernetes/apps/databases/cloudnative-pg/config/immich
   prune: true
   wait: true
   sourceRef:
