@@ -35,10 +35,10 @@ spec:
 
             resources:
               requests:
-                cpu: 100m
-                memory: 1G
+                cpu: 200m
+                #memory: 1G
               limits:
-                memory: 1G
+                memory: 2G
         pod:
           securityContext:
             runAsNonRoot: false
