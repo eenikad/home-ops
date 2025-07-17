@@ -74,9 +74,9 @@ spec:
       #   issuerUrl: https://auth.${SECRET_DOMAIN}
       #   clientId: immich
 
-      # persistence:
-      #   library:
-      #     existingClaim: immich-upload-pvc
+      persistence:
+        library:
+          existingClaim: immich-upload-pvc
 
     image:
       # renovate: datasource=github-releases depName=immich-app/immich
