@@ -95,7 +95,7 @@ spec:
           memory: 2Gi
       route:
         main:
-          hostnames: photos.anneken.cloud"
+          hostnames: photos.anneken.cloud
           parentRefs:
             - name: internal
               namespace: kube-system
