@@ -6,7 +6,7 @@ namespace: media
 components:
   - ../../components/common
 resources:
-  #- ./immich/ks.yaml
+  - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./music-assistant/ks.yaml
   - ./plex/ks.yaml
