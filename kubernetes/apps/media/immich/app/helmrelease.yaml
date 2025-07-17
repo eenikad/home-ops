@@ -93,13 +93,13 @@ spec:
           memory: 2Gi
         limits:
           memory: 2Gi
-      route:
-        main:
-          hostnames: photos.anneken.cloud
-          parentRefs:
-            - name: internal
-              namespace: kube-system
-              sectionName: https
+      # route:
+      #   main:
+      #     hostnames: photos.anneken.cloud
+      #     parentRefs:
+      #       - name: internal
+      #         namespace: kube-system
+      #         sectionName: https
       # ingress:
       #   main:
       #     enabled: true
