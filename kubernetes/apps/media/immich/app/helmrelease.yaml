@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: immich-charts
-  namespace: databases
+  namespace: media
 spec:
   interval: 2h
   url: https://immich-app.github.io/immich-charts
@@ -24,7 +24,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: immich-charts
-        namespace: databases
+        namespace: media
 
   values:
 
