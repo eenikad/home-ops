@@ -120,6 +120,7 @@ spec:
             "namespace": "network",
             "ips": ["10.20.0.120/24"],
             "mac": "3e:59:e4:f7:43:08",
+            "interface: "net1",
             "default-route": ["10.20.0.1"]
           }]
 
