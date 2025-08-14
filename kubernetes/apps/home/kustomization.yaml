@@ -21,4 +21,5 @@ resources:
  # - ./smtp-relay/ks.yaml
  # - ./exercisediary/ks.yaml
  # - ./atuin/ks.yaml
+  - ./rscp2mqtt/ks.yaml
   - ./wyoming-services/ks.yaml

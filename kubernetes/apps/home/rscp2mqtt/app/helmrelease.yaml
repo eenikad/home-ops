@@ -1,0 +1,181 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rscp2mqtt
+  namespace: home
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+
+  maxHistory: 3
+
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    controllers:
+      app:
+        type: statefulset
+
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          priorityClassName: home-cluster-critical
+
+          # affinity:
+          #   nodeAffinity:
+          #     requiredDuringSchedulingIgnoredDuringExecution:
+          #       nodeSelectorTerms:
+          #         - matchExpressions:
+          #             - key: zigbee.feature.node.kubernetes.io/sonoff
+          #               operator: In
+          #               values:
+          #                 - "true"
+
+          # nodeSelector:
+          #   zigbee.feature.node.kubernetes.io/sonoff: "true"
+
+        containers:
+          main:
+            image:
+              repository: docker.io/pvtom/rscp2mqtt
+              tag: v3.38
+
+            # env:
+            #   ZIGBEE2MQTT_DATA: &datadir /data
+            #   ZIGBEE2MQTT_CONFIG_FRONTEND_URL: https://zigbee.${SECRET_DOMAIN}
+            #   ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: ISO_8601
+            #   ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info # debug
+            #   ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
+            #   ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
+            #   ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
+            #   ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
+            #   ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: true
+            #   ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: &port 8080
+            #   ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC: homeassistant
+            #   ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
+            #   ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: "true"
+            #   ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE: 60
+            #   ZIGBEE2MQTT_CONFIG_MQTT_REJECT_UNAUTHORIZED: "true"
+            #   # ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx.home.svc.cluster.local:1883
+            #   ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
+            #   ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
+            #   # ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE: 115200
+            #   # ZIGBEE2MQTT_CONFIG_SERIAL_DISABLE_LED: "false"
+            #   # ZIGBEE2MQTT_CONFIG_SERIAL_PORT: &serialdevice /dev/ttyACM0
+            #   # ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: zstack
+
+            envFrom:
+              - secretRef:
+                  name: rscp2mqtt-secret
+
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+
+            # securityContext:
+            #   privileged: true
+
+            resources:
+              requests:
+                cpu: 23m
+                memory: 300M
+              limits:
+                memory: 300M
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name": "multus-iot",
+            "namespace": "network",
+            "ips": ["10.20.0.120/24"],
+            "mac": "3e:59:e4:f7:43:08"
+          }]
+
+    # service:
+    #   main:
+    #     controller: main
+    #     ports:
+    #       http:
+    #         primary: true
+    #         port: *port
+    #       websocket:
+    #         enabled: true
+    #         port: 9000
+
+    # service:
+    #   app:
+    #     ports:
+    #       http:
+    #         primary: true
+    #         port: *port
+    #       websocket:
+    #         enabled: true
+    #         port: 9000
+
+    # serviceMonitor:
+    #   app:
+    #     serviceName: &app rscp2mqtt
+    #     enabled: true
+    #     endpoints:
+    #       - port: metrics
+    #         scheme: http
+    #         path: /metrics
+    #         interval: 1m
+    #         scrapeTimeout: 10s
+
+    # route:
+    #   app:
+    #     hostnames:
+    #       - rscp2mqtt.anneken.cloud
+    #     parentRefs:
+    #       - name: internal
+    #         namespace: kube-system
+    #         sectionName: https
+    #     rules:
+    #       - backendRefs:
+    #           - identifier: app
+    #             port: *port
+
+    # persistence:
+    #   config:
+    #     existingClaim: zigbee2mqtt
+    #     globalMounts:
+    #       - path: *datadir
+
+      # usb:
+      #   type: hostPath
+      #   hostPath: /dev/sonoff
+      #   hostPathType: CharDevice
+      #   globalMounts:
+      #     - path: *serialdevice
