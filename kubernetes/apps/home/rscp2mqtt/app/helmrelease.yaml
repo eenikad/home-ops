@@ -119,7 +119,8 @@ spec:
             "name": "multus-iot",
             "namespace": "network",
             "ips": ["10.20.0.120/24"],
-            "mac": "3e:59:e4:f7:43:08"
+            "mac": "3e:59:e4:f7:43:08",
+            "default-route": ["10.20.0.1"]
           }]
 
     # service:
