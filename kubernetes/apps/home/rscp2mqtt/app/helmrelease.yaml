@@ -30,6 +30,17 @@ spec:
   values:
     controllers:
       app:
+        initContainers:
+          - name: set-default-route
+            image: alpine:3.20
+            securityContext:
+              privileged: true
+            command:
+              - sh
+              - -c
+              - |
+                ip route del default
+                ip route add default via 10.20.0.1 dev net1
         type: statefulset
 
         annotations:
@@ -119,9 +130,7 @@ spec:
             "name": "multus-iot",
             "namespace": "network",
             "ips": ["10.20.0.120/24"],
-            "mac": "3e:59:e4:f7:43:08",
-            "interface: "net1",
-            "default-route": ["10.20.0.1"]
+            "mac": "3e:59:e4:f7:43:20"
           }]
 
     # service:
