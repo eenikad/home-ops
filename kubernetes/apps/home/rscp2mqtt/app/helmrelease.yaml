@@ -4,6 +4,8 @@ kind: HelmRelease
 metadata:
   name: rscp2mqtt
   namespace: home
+  annotations:
+    cni.cilium.io/no-ipam: "true"
 spec:
   interval: 30m
   chartRef:
