@@ -53,8 +53,18 @@ spec:
               - sh
               - -c
               - |
-                ip route del default
+                echo "Warte auf Interface net1..."
+                while ! ip link show net1 >/dev/null 2>&1; do
+                  sleep 1
+                done
+                echo "Interface net1 gefunden."
+
+                echo "Lösche vorhandene Default-Route..."
+                ip route del default || true
+
+                echo "Füge neue Default-Route hinzu..."
                 ip route add default via 10.20.0.1 dev net1 || true
+                echo "Routing erfolgreich gesetzt."
 
 
 
