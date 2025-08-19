@@ -35,26 +35,26 @@ spec:
         pod:
           priorityClassName: home-cluster-critical
 
-        # initContainers:
-        #   delete-default-route:
-        #     image:
-        #       repository: docker.io/alpine
-        #       tag: 3.20
-        #     securityContext:
-        #       runAsNonRoot: false
-        #       runAsUser: 0
-        #       runAsGroup: 0
-        #       fsGroup: 0
-        #       fsGroupChangePolicy: OnRootMismatch
-        #       capabilities:
-        #         add:
-        #           - NET_ADMIN
-        #     command:
-        #       - sh
-        #       - -c
-        #       - |
-        #         ip route del default
-        #         ip route add default via 10.20.0.1 dev net1
+        initContainers:
+          delete-default-route:
+            image:
+              repository: docker.io/alpine
+              tag: 3.20
+            securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
+              runAsGroup: 0
+              fsGroup: 0
+              fsGroupChangePolicy: OnRootMismatch
+              capabilities:
+                add:
+                  - NET_ADMIN
+            command:
+              - sh
+              - -c
+              - |
+                ip route del default
+                ip route add default via 10.20.0.1 dev net1 || true
 
 
 
@@ -94,11 +94,11 @@ spec:
         fsGroup: 0
         fsGroupChangePolicy: OnRootMismatch
       annotations:
-        cni.cilium.io/no-ipam: "true"
+        #cni.cilium.io/no-ipam: "true"
         k8s.v1.cni.cncf.io/networks: |
           [{
             "name": "multus-iot",
             "namespace": "network",
             "ips": ["10.20.0.65/24"],
-            "mac": "3e:59:e4:f7:43:20"
+            "mac": "54:4a:e4:f7:43:20"
           }]
