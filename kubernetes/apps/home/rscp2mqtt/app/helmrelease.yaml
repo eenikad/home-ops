@@ -64,7 +64,9 @@ spec:
             envFrom:
               - secretRef:
                   name: rscp2mqtt-secret
-
+            capabilities:
+              add:
+                - NET_ADMIN
             probes:
               liveness:
                 enabled: true
