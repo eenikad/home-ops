@@ -22,8 +22,8 @@ spec:
         containers:
           main:
             image:
-              repository: pvtom/rscp2mqtt
-              tag: v3.38
+              repository: eenikad/rscp2mqtt
+              tag: 1.0
             envFrom:
               - secretRef:
                   name: rscp2mqtt-secret
