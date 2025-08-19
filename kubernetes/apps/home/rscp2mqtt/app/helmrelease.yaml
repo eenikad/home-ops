@@ -4,8 +4,6 @@ kind: HelmRelease
 metadata:
   name: rscp2mqtt
   namespace: home
-  annotations:
-    cni.cilium.io/no-ipam: "true"
 spec:
   interval: 30m
   chartRef:
@@ -95,6 +93,7 @@ spec:
         fsGroup: 0
         fsGroupChangePolicy: OnRootMismatch
       annotations:
+        cni.cilium.io/no-ipam: "true"
         k8s.v1.cni.cncf.io/networks: |
           [{
             "name": "multus-iot",
