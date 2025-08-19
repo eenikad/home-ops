@@ -13,112 +13,20 @@ spec:
 
   maxHistory: 3
 
-  install:
-    createNamespace: true
-    remediation:
-      retries: 3
-
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-
-  uninstall:
-    keepHistory: false
-
   values:
     controllers:
       main:
         #type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          priorityClassName: home-cluster-critical
-
-        initContainers:
-          delete-default-route:
-            image:
-              repository: docker.io/alpine
-              tag: 3.20
-            securityContext:
-              runAsNonRoot: false
-              runAsUser: 0
-              runAsGroup: 0
-              fsGroup: 0
-              fsGroupChangePolicy: OnRootMismatch
-              capabilities:
-                add:
-                  - NET_ADMIN
-            command:
-              - sh
-              - -c
-              - |
-                GATEWAY=10.20.0.1
-                INTERFACE=net1
-
-                echo "Warte auf Interface $INTERFACE..."
-                while ! ip link show "$INTERFACE" >/dev/null 2>&1; do
-                  sleep 1
-                done
-                echo "Interface $INTERFACE gefunden."
-
-                echo "Prüfe, ob Gateway $GATEWAY erreichbar ist..."
-                ping -c 1 -W 1 "$GATEWAY" || true
-
-                echo "Lösche vorhandene Default-Route..."
-                ip route del default || true
-
-                echo "Setze Hostroute für Gateway..."
-                ip route add "$GATEWAY" dev "$INTERFACE" || true
-
-                echo "Füge neue Default-Route hinzu..."
-                ip route add default via "$GATEWAY" dev "$INTERFACE"
-
-                echo "Routing erfolgreich gesetzt."
-
-
-
         containers:
           main:
             image:
-              repository: docker.io/pvtom/rscp2mqtt
+              repository: pvtom/rscp2mqtt
               tag: v3.38
             envFrom:
               - secretRef:
                   name: rscp2mqtt-secret
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 10
-            securityContext:
-              capabilities: { add: ["NET_ADMIN"] }
-            resources:
-              requests:
-                cpu: 23m
-                memory: 300M
-              limits:
-                memory: 300M
-
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: false
-        #privileged: true
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 0
-        fsGroupChangePolicy: OnRootMismatch
-      annotations:
-        #cni.cilium.io/no-ipam: "true"
-        k8s.v1.cni.cncf.io/networks: |
-          [{
-            "name": "multus-iot",
-            "namespace": "network",
-            "ips": ["10.20.0.65/24"],
-            "mac": "54:4a:e4:f7:43:20"
-          }]
+  service:
+    main:
+      enabled: false
