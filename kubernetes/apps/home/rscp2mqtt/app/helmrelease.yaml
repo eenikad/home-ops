@@ -82,7 +82,7 @@ spec:
           main:
             image:
               repository: docker.io/pvtom/rscp2mqtt
-              tag: v3.38
+              tag: v3.37
             envFrom:
               - secretRef:
                   name: rscp2mqtt-secret
