@@ -40,11 +40,12 @@ spec:
             image:
               repository: docker.io/alpine
               tag: 3.20
-            #securityContext:
-          #- name: set-default-route
-           # image: alpine:3.20
-            #securityContext:
-          #    privileged: true
+            securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
+              runAsGroup: 0
+              fsGroup: 0
+              fsGroupChangePolicy: OnRootMismatch
             command:
               - sh
               - -c
