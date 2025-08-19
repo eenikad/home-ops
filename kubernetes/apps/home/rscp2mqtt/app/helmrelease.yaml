@@ -76,7 +76,7 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: false
-        privileged: true
+        #privileged: true
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
