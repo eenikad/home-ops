@@ -27,6 +27,6 @@ spec:
             envFrom:
               - secretRef:
                   name: rscp2mqtt-secret
-  service:
-    main:
-      enabled: false
+    service:
+      main:
+        enabled: false
