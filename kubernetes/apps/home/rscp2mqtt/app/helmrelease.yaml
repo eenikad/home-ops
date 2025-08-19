@@ -36,8 +36,11 @@ spec:
           priorityClassName: home-cluster-critical
 
         initContainers:
-          - name: set-default-route
+          delete-default-route:
             image: alpine:3.20
+            #securityContext:
+          #- name: set-default-route
+           # image: alpine:3.20
             #securityContext:
           #    privileged: true
             command:
