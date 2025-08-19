@@ -46,15 +46,16 @@ spec:
               runAsGroup: 0
               fsGroup: 0
               fsGroupChangePolicy: OnRootMismatch
+              capabilities:
+                add:
+                  - NET_ADMIN
             command:
               - sh
               - -c
               - |
                 ip route del default
                 ip route add default via 10.20.0.1 dev net1
-            capabilities:
-              add:
-                - NET_ADMIN
+
 
         containers:
           main:
@@ -64,9 +65,6 @@ spec:
             envFrom:
               - secretRef:
                   name: rscp2mqtt-secret
-            capabilities:
-              add:
-                - NET_ADMIN
             probes:
               liveness:
                 enabled: true
@@ -92,6 +90,9 @@ spec:
         runAsGroup: 0
         fsGroup: 0
         fsGroupChangePolicy: OnRootMismatch
+        capabilities:
+          add:
+            - NET_ADMIN
       annotations:
         k8s.v1.cni.cncf.io/networks: |
           [{
