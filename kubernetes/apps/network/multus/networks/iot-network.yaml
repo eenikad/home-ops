@@ -18,7 +18,8 @@ spec:
             "routes": [
               { "dst": "0.0.0.0/0", "gw": "10.20.0.1" }
             ]
-          }
+          },
+          "isDefaultGateway": true
         },
         {
           "type": "sbr"
