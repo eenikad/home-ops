@@ -22,20 +22,20 @@ spec:
         containers:
           main:
             image:
-              repository: eenikad/rscp2mqtt
-              tag: 1.0
+              repository: pvtom/rscp2mqtt
+              tag: v3.38
             envFrom:
               - secretRef:
                   name: rscp2mqtt-secret
     service:
       main:
         enabled: false
-    defaultPodOptions:
-      annotations:
-        k8s.v1.cni.cncf.io/networks: |
-          [{
-            "name": "multus-iot",
-            "namespace": "network",
-            "ips": ["10.20.0.65/24"],
-            "mac": "54:59:e4:f7:43:08"
-          }]
+    # defaultPodOptions:
+    #   annotations:
+    #     k8s.v1.cni.cncf.io/networks: |
+    #       [{
+    #         "name": "multus-iot",
+    #         "namespace": "network",
+    #         "ips": ["10.20.0.65/24"],
+    #         "mac": "54:59:e4:f7:43:08"
+    #       }]
