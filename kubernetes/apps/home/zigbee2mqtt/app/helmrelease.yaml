@@ -54,8 +54,8 @@ spec:
         containers:
           main:
             image:
-              repository: docker.io/koenkk/zigbee2mqtt
-              tag: 2.6.1@sha256:22e1fc160163edee0ceef47910211e97e7b0fb18b6bc94c9b799409252409f6a
+              repository: ghcr.io/koenkk/zigbee2mqtt
+              tag: 2.6.3
 
             env:
               ZIGBEE2MQTT_DATA: &datadir /data
