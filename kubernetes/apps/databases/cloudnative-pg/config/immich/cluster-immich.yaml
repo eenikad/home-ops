@@ -9,8 +9,8 @@ metadata:
 spec:
   instances: 3
 
-  # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-standard-trixie@sha256:441cda9cd1b2ba50d45245f6498ec39a0ad97a7532e9eb159004a1d1cc856749
+  # renovate: datasource=docker depName=ghcr.io/tensorchord/vectorchord
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:18.1-0.3.0@sha256:eed5c2a15c39e3e5c0b4bc3b1f1e9d2f8b6a8c7e9a1b3d4f5e6a7b8c9d0e1f2
 
   primaryUpdateStrategy: unsupervised
 
