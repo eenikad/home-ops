@@ -19,4 +19,3 @@ spec:
       backendRefs:
         - name: immich-server
           port: 2283
-          port: 2283
