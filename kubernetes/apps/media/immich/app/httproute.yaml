@@ -10,7 +10,7 @@ spec:
       namespace: kube-system
       sectionName: https
   hostnames:
-    - "photos.${SECRET_DOMAIN}"
+    - "photos.anneken.cloud"
   rules:
     - matches:
         - path:
