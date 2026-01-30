@@ -49,6 +49,10 @@ spec:
   postBuild:
     substitute:
       APP: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -76,6 +80,10 @@ spec:
   postBuild:
     substitute:
       APP: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -103,3 +111,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
