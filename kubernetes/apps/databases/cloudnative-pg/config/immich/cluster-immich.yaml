@@ -25,10 +25,9 @@ spec:
       - name: vchord
         image:
           reference: ghcr.io/tensorchord/vchord-scratch:pg18-v0.5.3
-          dynamic_library_path:
-            - /usr/lib/postgresql/18/lib/
-          extension_control_path:
-            - /usr/share/postgresql/18/
+          # The operator CRD schema may not accept explicit path fields.
+          # Provide only the image reference and rely on the operator/runtime
+          # to install files into expected locations.
     shared_preload_libraries: ["vchord.so"]
 
   bootstrap:
