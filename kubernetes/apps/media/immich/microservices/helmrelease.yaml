@@ -49,7 +49,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     persistence:
       library:
-        persistentVolumeClaim:
-          existingClaim: immich-upload-pvc
-          globalMounts:
-            - path: /usr/src/app/upload
+        existingClaim: immich-upload-pvc
+        globalMounts:
+          - path: /usr/src/app/upload
