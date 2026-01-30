@@ -70,10 +70,10 @@ spec:
             port: *port
     persistence:
       library:
-        type: persistentVolumeClaim
-        existingClaim: immich-upload-pvc
-        globalMounts:
-          - path: /usr/src/app/upload
+        persistentVolumeClaim:
+          existingClaim: immich-upload-pvc
+          globalMounts:
+            - path: /usr/src/app/upload
       tmpfs:
         type: emptyDir
         advancedMounts:
