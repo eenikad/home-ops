@@ -1,31 +1,35 @@
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: immich-db-secret
-  namespace: databases
-stringData:
-  username: immich
-  password: immich
----
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres-immich
   namespace: databases
+  annotations:
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
   instances: 3
 
-  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:14.17-0.3.0@sha256:9bc4f201e463e735389a89b87662e82a711a9ba0bcbc11b590195bcde17d11af
+  # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-standard-trixie@sha256:441cda9cd1b2ba50d45245f6498ec39a0ad97a7532e9eb159004a1d1cc856749
 
   primaryUpdateStrategy: unsupervised
 
   postgresql:
-    shared_preload_libraries: ["vchord.so"]
     parameters:
+      max_connections: "400"
+      shared_buffers: 512MB
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: all
       timezone: "Europe/Berlin"
+    extensions:
+      - name: vchord
+        image:
+          reference: ghcr.io/tensorchord/vchord-scratch:pg18-v0.5.3
+          dynamic_library_path:
+            - /usr/lib/postgresql/18/lib/
+          extension_control_path:
+            - /usr/share/postgresql/18/
+    shared_preload_libraries: ["vchord.so"]
 
   bootstrap:
     initdb:
@@ -42,8 +46,22 @@ spec:
   superuserSecret:
     name: cloudnative-pg
 
+  resources:
+    requests:
+      cpu: 500m
+    limits:
+      hugepages-2Mi: 2Gi
+      memory: 4Gi
+
   monitoring:
     enablePodMonitor: true
+
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters: &parameters
+        barmanObjectName: immich-backup
+        serverName: postgres-immich
 
   #bootstrap:
   #  recovery:

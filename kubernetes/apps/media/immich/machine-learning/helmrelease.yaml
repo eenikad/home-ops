@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: immich-server
+  name: immich-machine-learning
   namespace: media
 spec:
   interval: 1h
@@ -12,30 +12,20 @@ spec:
     namespace: media
   values:
     controllers:
-      immich:
+      immich-machine-learning:
         labels:
           nfsMount: "true"
-          postgresVector: "true"
         annotations:
           reloader.stakater.com/auto: "true"
         strategy: RollingUpdate
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/home-operations/postgres-init
-              tag: 18@sha256:3c54d39f19fdb82ed5b3f286450e4071133cc6025bd0e25856bc2c522f8fc030
-            envFrom:
-              - secretRef:
-                  name: immich-db-secret
         containers:
           app:
             image:
-              repository: ghcr.io/immich-app/immich-server
-              tag: v2.5.2@sha256:8ac5a6d471fbb6fcfec6bc34854dd5a947c1795547f0d9345d9bf1803d1209e3
+              repository: ghcr.io/immich-app/immich-machine-learning
+              tag: v2.5.2-openvino@sha256:ee58fc4d486f6e4247a9c065b140a7eb7114fe41b1d5a63c0be0040a26a0674c
             env:
               TZ: ${TIMEZONE}
-              IMMICH_WORKERS_INCLUDE: api
-              IMMICH_METRICS_INCLUDE: all
+              MPLCONFIGDIR: /cache/matplotlib
             envFrom:
               - configMapRef:
                   name: immich-configmap
@@ -47,36 +37,26 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /server-info/ping
-                    port: &port 2283
+                    path: /ping
+                    port: &port 3003
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 5
               readiness: *probes
               startup:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/server/ping
-                    port: *port
-                  failureThreshold: 30
-                  periodSeconds: 5
-                  successThreshold: 1
-                  timeoutSeconds: 1
+                enabled: false
+            resources:
+              requests:
+                cpu: 10m
+                memory: 250Mi
+              limits:
+                memory: 4000Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-            resources:
-              requests:
-                cpu: 10m
-                memory: 150Mi
-              limits:
-                memory: 500Mi
     defaultPodOptions:
-      enableServiceLinks: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -88,11 +68,20 @@ spec:
         ports:
           http:
             port: *port
-          metrics:
-            port: 8081
     persistence:
       library:
         type: pvc
         existingClaim: immich-upload-pvc
         globalMounts:
           - path: /usr/src/app/upload
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          immich-machine-learning:
+            app:
+              - path: /cache
+                subPath: cache
+              - path: /.cache
+                subPath: dotCache
+              - path: /tmp
+                subPath: tmp
