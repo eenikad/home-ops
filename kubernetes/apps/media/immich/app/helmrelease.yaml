@@ -24,9 +24,26 @@ spec:
             image:
               repository: ghcr.io/home-operations/postgres-init
               tag: 18@sha256:3c54d39f19fdb82ed5b3f286450e4071133cc6025bd0e25856bc2c522f8fc030
-            envFrom:
-              - secretRef:
-                  name: immich-db-secret
+            env:
+              - name: INIT_POSTGRES_HOST
+                value: postgres.databases.svc.cluster.local
+              - name: INIT_POSTGRES_DBNAME
+                value: immich
+              - name: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-db-secret
+                    key: DB_USERNAME
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-db-secret
+                    key: DB_PASSWORD
+              - name: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: immich-db-secret
+                    key: DB_PASSWORD
         containers:
           app:
             image:
