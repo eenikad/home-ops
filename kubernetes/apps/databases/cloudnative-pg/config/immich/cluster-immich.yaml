@@ -55,12 +55,13 @@ spec:
   monitoring:
     enablePodMonitor: true
 
-  plugins:
-    - name: barman-cloud.cloudnative-pg.io
-      isWALArchiver: true
-      parameters: &parameters
-        barmanObjectName: immich-backup
-        serverName: postgres-immich
+  # barman-cloud backup plugin disabled for now; can be re-enabled once plugin is validated
+  # plugins:
+  #   - name: barman-cloud.cloudnative-pg.io
+  #     isWALArchiver: true
+  #     parameters: &parameters
+  #       barmanObjectName: immich-backup
+  #       serverName: postgres-immich
 
   #bootstrap:
   #  recovery:
