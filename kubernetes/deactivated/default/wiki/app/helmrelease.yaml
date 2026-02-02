@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/requarks/wiki
-              tag: 2.5.307@sha256:a1ac7c317a52c80da0bfc5ee57b4f009b22ed322569e435f52c57c2f24c70d8a
+              tag: 2.5.311@sha256:1ad473cff124fa455e7aa43bbf7984c5b111a62a1317c664c4bf7a51343d6c91
             env:
               TZ: ${TIMEZONE}
               DB_TYPE: postgres
