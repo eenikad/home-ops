@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: ghcr.io/itzg/minecraft-server
-              tag: 2025.6.2@sha256:262e2309f7cc6b2ff0ac1458ac52c91e9bc778989543feec6588501f6dad31ef
+              tag: 2026.2.1@sha256:44aacf3902c1c2e18dddfe8585dd44badbf56a0a768c773a5e0bcfe4bc1d0443
             env:
               TZ: ${TIMEZONE}
               AUTOPAUSE_TIMEOUT_EST: 600
