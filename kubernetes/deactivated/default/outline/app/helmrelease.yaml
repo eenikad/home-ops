@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: docker.io/outlinewiki/outline
-              tag: 0.84.0@sha256:57717fcb7b697c4397578a30afe183d698c968c47279fe45dc26625343b236a6
+              tag: 1.6.1@sha256:a750f764080ce28d4a7393176011c8e2e4170b41689a8f6d91327dadf4904eb6
             command: ["/bin/sh", "-c", "yarn db:migrate --env=production-ssl-disabled && yarn start --env=production-ssl-disabled"]
             env:
               TZ: ${TIMEZONE}
