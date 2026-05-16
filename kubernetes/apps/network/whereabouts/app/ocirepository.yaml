@@ -19,8 +19,6 @@ metadata:
 spec:
   interval: 10m
   url: oci://ghcr.io/k8snetworkplumbingwg/whereabouts-chart
-  secretRef:
-    name: ghcr-auth
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
