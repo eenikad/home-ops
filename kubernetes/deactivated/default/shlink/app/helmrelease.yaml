@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/shlinkio/shlink
-              tag: 4.4.6@sha256:1a697baca56ab8821783e0ce53eb4fb22e51bb66749ec50581adc0cb6d031d7a
+              tag: 5.1.5@sha256:77b8eb87bcb1a56bd0ecc590398d415545e5ba83414f28d37dc565a91c3c50b2
             env:
               TIMEZONE: ${TIMEZONE}
               DB_DRIVER: postgres
