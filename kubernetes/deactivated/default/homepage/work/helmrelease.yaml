@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: ghcr.io/gethomepage/homepage
-              tag: v1.3.2@sha256:4f923bf0e9391b3a8bc5527e539b022e92dcc8a3a13e6ab66122ea9ed030e196
+              tag: v2.2.0@sha256:753eeb0cc22ab7baad39ed47cbd1aae14e193dd1b264e965f193a9ea1d1e1bdd
             env:
               TZ: ${TIMEZONE}
               HOMEPAGE_ALLOWED_HOSTS: homepage-work.${SECRET_DOMAIN}
