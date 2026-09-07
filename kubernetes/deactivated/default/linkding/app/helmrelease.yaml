@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/sissbruecker/linkding
-              tag: 1.41.0@sha256:49346ebe531db7034a4347b83bef82838af76b39695f096c50a3dc3064d5ac1f
+              tag: 1.46.2@sha256:0c0a9a04c7ebd644293c37f98710872fe7cdff0ea1ff7fd9be4d235e4c4678d2
             env:
               TZ: ${TIMEZONE}
               LD_DISABLE_BACKGROUND_TASKS: false
