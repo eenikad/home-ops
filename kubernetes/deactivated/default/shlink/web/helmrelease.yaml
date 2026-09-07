@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: ghcr.io/shlinkio/shlink-web-client
-              tag: 4.4.1@sha256:966152472dfc6e0f3cbc23cc9d2fc5072e1a6518c3b322b80c06fa7434d067a7
+              tag: 4.8.1@sha256:dc8bf3565a25bd0602ff11ee352920830ce457ab58a2b2c62f2ebb23e8c8b9ee
             env:
               TIMEZONE: ${TIMEZONE}
               SHLINK_SERVER_URL: https://${SECRET_DOMAIN_SHORT}
