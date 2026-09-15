@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2026.6.3@sha256:82db7a297c96a0288559c5f2849878168c14a06557edc114084d874268c92a9a
+              tag: 2026.9.2@sha256:83decfe1f940120bd7ecbb2c7d72d5b2723dfddb39de3f4e9914c19ead1f721f
             env:
               VENV_FOLDER: /venv
               TZ: Europe/Berlin
