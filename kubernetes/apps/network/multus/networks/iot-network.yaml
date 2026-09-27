@@ -1,8 +1,8 @@
----
-apiVersion: "k8s.cni.cncf.io/v1"
+apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
   name: multus-iot
+  namespace: network
 spec:
   config: |-
     {
@@ -12,11 +12,8 @@ spec:
       "mode": "bridge",
       "ipam": {
         "type": "whereabouts",
-        "range": "10.20.0.128/25",
-        "routes": [
-          {
-            "dst": "10.20.0.0/24"
-          }
-        ]
+        "range": "10.20.0.0/24",
+        "range_start": "10.20.0.200",
+        "range_end": "10.20.0.220"
       }
     }
