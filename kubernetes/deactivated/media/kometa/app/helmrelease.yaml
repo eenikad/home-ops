@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: docker.io/kometateam/kometa
-              tag: v2.3.1@sha256:683c04827ef3fecf1cc5cb178f75f91f968aef6c6d89d34bc9c70966fd1d7259
+              tag: v2.5.2@sha256:06e498cded70c9815522c6b2d8708b31759c1e37714746d1eeb56f1e40a8fd95
             env:
               TZ: ${TIMEZONE}
               PMM_READ_ONLY_CONFIG: true
