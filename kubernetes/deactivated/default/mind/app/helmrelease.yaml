@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: docker.io/mrcas/mind
-              tag: v1.4.1@sha256:152f824d093f2e8772af0d209afc710b9e79edf3e6286d7c3eccb0509dafffd4
+              tag: v1.5.1@sha256:e9d849852e23d01905c9ce5513633659a00d53e68707127c326b90de6f0f3643
             env:
               TZ: ${TIMEZONE}
             securityContext:
