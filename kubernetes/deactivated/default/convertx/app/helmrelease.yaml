@@ -17,7 +17,7 @@ spec:
           app:
             image:
               repository: ghcr.io/c4illin/convertx
-              tag: v0.14.1@sha256:346589f154332997329fdc888417d4b24c49cc9140eab80e637a68cfbdd8041b
+              tag: v0.20.0@sha256:6259e0c1e063120b1ddbc6937372a83be58182b2c9dc82264f58e100907b3e51
             env:
               TZ: ${TIMEZONE}
               ACCOUNT_REGISTRATION: false
