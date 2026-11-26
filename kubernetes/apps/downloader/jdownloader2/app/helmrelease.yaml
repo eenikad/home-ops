@@ -31,7 +31,7 @@ spec:
           main:
             image:
               repository: ghcr.io/jlesage/jdownloader-2
-              tag: v26.03.1@sha256:3d6cb102bd9bacff12ab1ca5136a38cb8f93d6595a7ccf5bce60aac4df138ebd
+              tag: v26.11.2@sha256:deb1f5519e5434d2d22d87f5c91044986b302d2cfb86846d7e72b2ad4def4ea3
 
             resources:
               requests:
